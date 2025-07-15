@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kiger沟通助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a5acd, #9b59b6);
+            color: #333;
+            line-height: 1.6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        
+        .app-header {
+            background: linear-gradient(to right, #8a2be2, #6a5acd);
+            color: white;
+            padding: 14px 16px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+        
+        .app-header h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 10px;
+        }
+        
+        .notification-bar {
+            background: rgba(255, 182, 193, 0.3);
+            padding: 10px 12px;
+            text-align: center;
+            font-weight: 600;
+            color: #4b0082;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .display-area {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .display-text {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.4;
+            padding: 15px;
+            color: #333;
+            transition: all 0.3s ease;
+            word-break: break-word;
+            width: 100%;
+        }
+        
+        .placeholder {
+            font-size: 1.6rem;
+            color: #aaa;
+            font-weight: 500;
+        }
+        
+        .quick-phrases {
+            padding: 12px 8px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px 8px;
+            color: #6a5acd;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .phrases-container {
+            display: flex;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .phrases-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .phrase-btn {
+            flex: 0 0 auto;
+            background: #e6e6fa;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 14px;
+            margin: 0 5px;
+            color: #333;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .input-area {
+            padding: 12px;
+            background: #fff;
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .message-input {
+            flex: 1;
+            border: none;
+            background: #f5f5f5;
+            border-radius: 22px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            outline: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            min-width: 0;
+        }
+        
+        .send-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #6a5acd;
+            color: white;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: 0 3px 8px rgba(106, 90, 205, 0.3);
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            background: #fff;
+            border-top: 1px solid #eee;
+            flex-shrink: 0;
+        }
+        
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: #6a5acd;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            flex: 1;
+            max-width: 33%;
+        }
+        
+        .action-btn i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+        
+        /* 历史记录页面样式 */
+        .history-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 100;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .history-screen.active {
+            transform: translateX(0);
+        }
+        
+        .history-header {
+            background: linear-gradient(to right, #8a2be2, #6a5acd);
+            color: white;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .history-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        
+        .history-item {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        
+        .history-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #aaa;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .history-empty i {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            color: #e0e0e0;
+        }
+        
+        /* 短语管理页面样式 */
+        .management-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 100;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .management-screen.active {
+            transform: translateX(0);
+        }
+        
+        .management-header {
+            background: linear-gradient(to right, #8a2be2, #6a5acd);
+            color: white;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        
+        .management-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            flex: 1;
+            padding-left: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .save-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        
+        .phrase-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .phrase-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .phrase-text {
+            flex: 1;
+            padding-right: 10px;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+        
+        .phrase-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .edit-btn, .delete-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .edit-btn {
+            background: #e6e6fa;
+            color: #6a5acd;
+        }
+        
+        .delete-btn {
+            background: #ffebee;
+            color: #f44336;
+        }
+        
+        .add-phrase-btn {
+            background: #6a5acd;
+            color: white;
+            border: none;
+            border-radius: 22px;
+            padding: 12px 16px;
+            margin: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(106, 90, 205, 0.3);
+            flex-shrink: 0;
+        }
+        
+        /* 图标字体 */
+        .fas {
+            font-family: Arial;
+            font-style: normal;
+        }
+        
+        .fa-history::before {
+            content: "📜";
+        }
+        
+        .fa-cog::before {
+            content: "⚙️";
+        }
+        
+        .fa-eraser::before {
+            content: "🧹";
+        }
+        
+        .fa-arrow-left::before {
+            content: "←";
+        }
+        
+        .fa-paper-plane::before {
+            content: "✉️";
+        }
+        
+        .fa-plus::before {
+            content: "+";
+        }
+        
+        .fa-edit::before {
+            content: "✏️";
+        }
+        
+        .fa-trash::before {
+            content: "🗑️";
+        }
+        
+        .fa-comment-slash::before {
+            content: "💬";
+        }
+        
+        .fa-save::before {
+            content: "💾";
+        }
+        
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            background: linear-gradient(to right, #8a2be2, #6a5acd);
+            color: white;
+            padding: 14px 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            padding: 18px;
+        }
+        
+        .modal-input {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            outline: none;
+            transition: border 0.2s ease;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 0 16px 16px;
+        }
+        
+        .cancel-btn, .confirm-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        
+        .cancel-btn {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .confirm-btn {
+            background: #6a5acd;
+            color: white;
+        }
+        
+        .delete-btn-modal {
+            background: #f44336;
+        }
+        
+        /* 响应式调整 - 小屏幕优化 */
+        @media (max-width: 360px) {
+            .display-text {
+                font-size: 1.9rem;
+                padding: 10px;
+            }
+            
+            .placeholder {
+                font-size: 1.4rem;
+            }
+            
+            .phrase-btn {
+                padding: 7px 12px;
+                font-size: 0.8rem;
+                margin: 0 4px;
+            }
+            
+            .message-input {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+            
+            .send-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 1rem;
+            }
+            
+            .action-btn {
+                font-size: 0.7rem;
+                padding: 5px 8px;
+            }
+            
+            .action-btn i {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        /* 防止iOS点击高亮 */
+        * {
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 主屏幕 -->
+        <div class="app-header">
+            <h1>Kiger沟通助手</h1>
+        </div>
+        
+        <div class="notification-bar">
+            不方便说话哦，请等待我打字
+        </div>
+        
+        <div class="main-content">
+            <div class="display-area">
+                <div id="displayText" class="display-text placeholder">
+                    请选择下方常用语或输入文字
+                </div>
+            </div>
+            
+            <div class="quick-phrases">
+                <div class="section-title">
+                    <span>常用短语</span>
+                </div>
+                <div id="phrasesContainer" class="phrases-container">
+                    <!-- 常用短语会通过JS动态添加 -->
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <input type="text" id="messageInput" class="message-input" placeholder="请输入要说的话...">
+                <button id="sendBtn" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" id="historyBtn">
+                    <i class="fas fa-history"></i>
+                    <span>历史</span>
+                </button>
+                <button class="action-btn" id="manageBtn">
+                    <i class="fas fa-cog"></i>
+                    <span>设置</span>
+                </button>
+                <button class="action-btn" id="clearBtn">
+                    <i class="fas fa-eraser"></i>
+                    <span>清屏</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 历史记录屏幕 -->
+        <div id="historyScreen" class="history-screen">
+            <div class="history-header">
+                <button class="back-btn" id="historyBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="history-title">消息历史记录</div>
+            </div>
+            <div id="historyList" class="history-list">
+                <!-- 历史记录会通过JS动态添加 -->
+            </div>
+        </div>
+        
+        <!-- 短语管理屏幕 -->
+        <div id="managementScreen" class="management-screen">
+            <div class="management-header">
+                <button class="back-btn" id="managementBackBtn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="management-title">管理常用短语</div>
+                <button class="save-btn" id="savePhrasesBtn">
+                    <i class="fas fa-save"></i> 保存
+                </button>
+            </div>
+            <div id="phraseList" class="phrase-list">
+                <!-- 短语列表会通过JS动态添加 -->
+            </div>
+            <button class="add-phrase-btn" id="addPhraseBtn">
+                <i class="fas fa-plus"></i>
+                添加新短语
+            </button>
+        </div>
+        
+        <!-- 添加/编辑短语模态框 -->
+        <div id="phraseModalOverlay" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header" id="phraseModalTitle">添加新短语</div>
+                <div class="modal-body">
+                    <input type="text" id="phraseInput" class="modal-input" placeholder="输入新短语...">
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn" id="cancelPhraseBtn">取消</button>
+                    <button class="confirm-btn" id="savePhraseBtn">保存</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 删除确认模态框 -->
+        <div id="deleteModalOverlay" class="modal-overlay">
+            <div class="modal">
+                <div class="modal-header">删除短语</div>
+                <div class="modal-body">
+                    <p id="deleteMessage">确定要删除这个短语吗？</p>
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn" id="cancelDeleteBtn">取消</button>
+                    <button class="confirm-btn delete-btn-modal" id="confirmDeleteBtn">删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 应用状态管理
+        const appState = {
+            displayText: '',
+            messageHistory: [],
+            quickPhrases: [
+                "听不清楚呢，可以再说一遍吗？",
+                "可以一起合影吗？",
+                "请稍等一下哦~",
+                "谢谢你的支持！",
+                "我是初音未来，请多指教！",
+                "需要签名吗？",
+                "对不起，我现在不太方便",
+                "请关注我的社交账号",
+                "这个姿势可以吗？",
+                "需要调整位置吗？"
+            ],
+            editingPhraseIndex: -1,
+            deletingPhraseIndex: -1
+        };
+
+        // DOM元素引用
+        const elements = {
+            displayText: document.getElementById('displayText'),
+            phrasesContainer: document.getElementById('phrasesContainer'),
+            messageInput: document.getElementById('messageInput'),
+            sendBtn: document.getElementById('sendBtn'),
+            historyBtn: document.getElementById('historyBtn'),
+            manageBtn: document.getElementById('manageBtn'),
+            clearBtn: document.getElementById('clearBtn'),
+            historyScreen: document.getElementById('historyScreen'),
+            managementScreen: document.getElementById('managementScreen'),
+            historyList: document.getElementById('historyList'),
+            phraseList: document.getElementById('phraseList'),
+            historyBackBtn: document.getElementById('historyBackBtn'),
+            managementBackBtn: document.getElementById('managementBackBtn'),
+            savePhrasesBtn: document.getElementById('savePhrasesBtn'),
+            addPhraseBtn: document.getElementById('addPhraseBtn'),
+            phraseModalOverlay: document.getElementById('phraseModalOverlay'),
+            deleteModalOverlay: document.getElementById('deleteModalOverlay'),
+            phraseInput: document.getElementById('phraseInput'),
+            phraseModalTitle: document.getElementById('phraseModalTitle'),
+            cancelPhraseBtn: document.getElementById('cancelPhraseBtn'),
+            savePhraseBtn: document.getElementById('savePhraseBtn'),
+            cancelDeleteBtn: document.getElementById('cancelDeleteBtn'),
+            confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
+            deleteMessage: document.getElementById('deleteMessage')
+        };
+
+        // 初始化应用
+        function initApp() {
+            loadFromLocalStorage();
+            renderQuickPhrases();
+            setupEventListeners();
+            preventKeyboardZoom();
+            ensureLayoutStability();
+        }
+
+        // 确保布局稳定性
+        function ensureLayoutStability() {
+            // 强制浏览器重新计算布局
+            document.body.style.display = 'block';
+            setTimeout(() => {
+                document.body.style.display = '';
+            }, 50);
+        }
+
+        // 防止iOS键盘缩放
+        function preventKeyboardZoom() {
+            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                document.querySelectorAll('input, textarea').forEach(el => {
+                    el.addEventListener('focus', () => {
+                        document.body.style.zoom = "1";
+                        document.documentElement.style.zoom = "1";
+                    });
+                });
+            }
+        }
+
+        // 从本地存储加载数据
+        function loadFromLocalStorage() {
+            try {
+                const savedHistory = localStorage.getItem('kiger_message_history');
+                const savedPhrases = localStorage.getItem('kiger_quick_phrases');
+                
+                if (savedHistory) {
+                    appState.messageHistory = JSON.parse(savedHistory);
+                }
+                
+                if (savedPhrases) {
+                    appState.quickPhrases = JSON.parse(savedPhrases);
+                }
+            } catch (e) {
+                console.error("加载本地存储失败:", e);
+            }
+        }
+
+        // 保存到本地存储
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('kiger_message_history', JSON.stringify(appState.messageHistory));
+                localStorage.setItem('kiger_quick_phrases', JSON.stringify(appState.quickPhrases));
+            } catch (e) {
+                console.error("保存到本地存储失败:", e);
+            }
+        }
+
+        // 渲染快速短语
+        function renderQuickPhrases() {
+            elements.phrasesContainer.innerHTML = '';
+            appState.quickPhrases.forEach((phrase) => {
+                const phraseBtn = document.createElement('button');
+                phraseBtn.className = 'phrase-btn';
+                phraseBtn.textContent = phrase;
+                phraseBtn.onclick = () => sendQuickPhrase(phrase);
+                elements.phrasesContainer.appendChild(phraseBtn);
+            });
+        }
+
+        // 渲染历史记录
+        function renderHistory() {
+            elements.historyList.innerHTML = '';
+            
+            if (appState.messageHistory.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'history-empty';
+                emptyMsg.innerHTML = `
+                    <i class="fas fa-comment-slash"></i>
+                    <h3>暂无历史记录</h3>
+                    <p>发送的消息将显示在这里</p>
+                `;
+                elements.historyList.appendChild(emptyMsg);
+                return;
+            }
+            
+            appState.messageHistory.forEach((message) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.textContent = message;
+                elements.historyList.appendChild(historyItem);
+            });
+        }
+
+        // 渲染短语管理列表
+        function renderPhraseManagement() {
+            elements.phraseList.innerHTML = '';
+            
+            appState.quickPhrases.forEach((phrase, index) => {
+                const phraseItem = document.createElement('div');
+                phraseItem.className = 'phrase-item';
+                phraseItem.innerHTML = `
+                    <div class="phrase-text">${phrase}</div>
+                    <div class="phrase-actions">
+                        <button class="edit-btn" data-index="${index}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-btn" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                elements.phraseList.appendChild(phraseItem);
+            });
+            
+            // 为编辑和删除按钮添加事件监听器
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                    openEditPhraseModal(index);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.currentTarget.getAttribute('data-index'));
+                    openDeletePhraseModal(index);
+                });
+            });
+        }
+
+        // 发送快速短语
+        function sendQuickPhrase(phrase) {
+            appState.displayText = phrase;
+            updateDisplayText();
+            
+            // 添加到历史记录
+            appState.messageHistory.unshift(phrase);
+            if (appState.messageHistory.length > 50) {
+                appState.messageHistory.pop();
+            }
+            
+            saveToLocalStorage();
+            
+            // 如果历史记录屏幕是打开的，更新它
+            if (elements.historyScreen.classList.contains('active')) {
+                renderHistory();
+            }
+        }
+
+        // 发送自定义消息
+        function sendCustomMessage() {
+            const message = elements.messageInput.value.trim();
+            if (!message) return;
+            
+            appState.displayText = message;
+            updateDisplayText();
+            
+            // 添加到历史记录
+            appState.messageHistory.unshift(message);
+            if (appState.messageHistory.length > 50) {
+                appState.messageHistory.pop();
+            }
+            
+            // 清空输入框
+            elements.messageInput.value = '';
+            
+            saveToLocalStorage();
+            
+            // 如果历史记录屏幕是打开的，更新它
+            if (elements.historyScreen.classList.contains('active')) {
+                renderHistory();
+            }
+        }
+
+        // 清空显示区域
+        function clearDisplay() {
+            appState.displayText = '';
+            updateDisplayText();
+        }
+
+        // 更新显示文本
+        function updateDisplayText() {
+            if (appState.displayText) {
+                elements.displayText.textContent = appState.displayText;
+                elements.displayText.className = 'display-text fade-in';
+            } else {
+                elements.displayText.textContent = '请选择下方常用语或输入文字';
+                elements.displayText.className = 'display-text placeholder';
+            }
+        }
+
+        // 打开编辑短语模态框
+        function openEditPhraseModal(index) {
+            appState.editingPhraseIndex = index;
+            elements.phraseInput.value = appState.quickPhrases[index];
+            elements.phraseModalTitle.textContent = '编辑短语';
+            elements.phraseModalOverlay.classList.add('active');
+            setTimeout(() => elements.phraseInput.focus(), 100);
+        }
+
+        // 打开添加短语模态框
+        function openAddPhraseModal() {
+            appState.editingPhraseIndex = -1;
+            elements.phraseInput.value = '';
+            elements.phraseModalTitle.textContent = '添加新短语';
+            elements.phraseModalOverlay.classList.add('active');
+            setTimeout(() => elements.phraseInput.focus(), 100);
+        }
+
+        // 保存短语
+        function savePhrase() {
+            const phrase = elements.phraseInput.value.trim();
+            if (!phrase) return;
+            
+            if (appState.editingPhraseIndex >= 0) {
+                // 编辑现有短语
+                appState.quickPhrases[appState.editingPhraseIndex] = phrase;
+            } else {
+                // 添加新短语
+                appState.quickPhrases.unshift(phrase);
+            }
+            
+            renderQuickPhrases();
+            renderPhraseManagement();
+            closePhraseModal();
+        }
+
+        // 打开删除短语确认框
+        function openDeletePhraseModal(index) {
+            appState.deletingPhraseIndex = index;
+            const phrase = appState.quickPhrases[index];
+            elements.deleteMessage.textContent = `确定要删除"${phrase}"吗？`;
+            elements.deleteModalOverlay.classList.add('active');
+        }
+
+        // 确认删除短语
+        function confirmDeletePhrase() {
+            if (appState.deletingPhraseIndex >= 0) {
+                appState.quickPhrases.splice(appState.deletingPhraseIndex, 1);
+                renderQuickPhrases();
+                renderPhraseManagement();
+            }
+            closeDeleteModal();
+        }
+
+        // 关闭短语模态框
+        function closePhraseModal() {
+            elements.phraseModalOverlay.classList.remove('active');
+            appState.editingPhraseIndex = -1;
+        }
+
+        // 关闭删除模态框
+        function closeDeleteModal() {
+            elements.deleteModalOverlay.classList.remove('active');
+            appState.deletingPhraseIndex = -1;
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 发送消息按钮
+            elements.sendBtn.addEventListener('click', sendCustomMessage);
+            
+            // 输入框回车发送
+            elements.messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendCustomMessage();
+                }
+            });
+            
+            // 历史记录按钮
+            elements.historyBtn.addEventListener('click', () => {
+                renderHistory();
+                elements.historyScreen.classList.add('active');
+            });
+            
+            // 短语管理按钮
+            elements.manageBtn.addEventListener('click', () => {
+                renderPhraseManagement();
+                elements.managementScreen.classList.add('active');
+            });
+            
+            // 清屏按钮
+            elements.clearBtn.addEventListener('click', clearDisplay);
+            
+            // 返回按钮
+            elements.historyBackBtn.addEventListener('click', () => {
+                elements.historyScreen.classList.remove('active');
+            });
+            
+            elements.managementBackBtn.addEventListener('click', () => {
+                elements.managementScreen.classList.remove('active');
+            });
+            
+            // 保存短语按钮
+            elements.savePhrasesBtn.addEventListener('click', () => {
+                saveToLocalStorage();
+                renderQuickPhrases();
+                elements.managementScreen.classList.remove('active');
+            });
+            
+            // 添加短语按钮
+            elements.addPhraseBtn.addEventListener('click', openAddPhraseModal);
+            
+            // 短语模态框按钮
+            elements.cancelPhraseBtn.addEventListener('click', closePhraseModal);
+            elements.savePhraseBtn.addEventListener('click', savePhrase);
+            
+            // 删除模态框按钮
+            elements.cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+            elements.confirmDeleteBtn.addEventListener('click', confirmDeletePhrase);
+            
+            // 点击模态框外部关闭
+            elements.phraseModalOverlay.addEventListener('click', (e) => {
+                if (e.target === elements.phraseModalOverlay) {
+                    closePhraseModal();
+                }
+            });
+            
+            elements.deleteModalOverlay.addEventListener('click', (e) => {
+                if (e.target === elements.deleteModalOverlay) {
+                    closeDeleteModal();
+                }
+            });
+            
+            // 防止iOS点击事件延迟
+            document.addEventListener('touchstart', function() {}, true);
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
