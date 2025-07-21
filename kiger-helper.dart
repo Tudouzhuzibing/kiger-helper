@@ -37,13 +37,10 @@ class _CommunicationScreenState extends State<CommunicationScreen> {
   // 常用短语列表
   List<String> quickPhrases = [
     "听不清楚呢，可以再说一遍吗？",
-    "可以一起合影吗？",
+    "可以一起集邮吗？",
     "请稍等一下哦~",
-    "谢谢你的支持！",
-    "我是初音未来，请多指教！",
-    "需要签名吗？",
+    "谢谢您！",
     "对不起，我现在不太方便",
-    "请关注我的社交账号",
     "这个姿势可以吗？",
     "需要调整位置吗？"
   ];
