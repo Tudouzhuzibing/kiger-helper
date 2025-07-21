@@ -1,9 +1,16 @@
-A communication assistant app designed for Kigers
+# kiger_helper_app
 
-一个为Kiger扮演者设计的沟通助手应用
+A new Flutter project.
 
-这是一个初中生kiger的想法（）2025.7
+## Getting Started
 
-欢迎提出意见
-tudouzhuzibing@gmail.com
-issues也可以
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
